@@ -367,7 +367,7 @@
   <div class="header-divider"></div>
   <div class="header-text">
     <h1>Registro de Mentores</h1>
-    <p>Completa la información para el desarrollo de tu perfil en nuestra documentación.</p>
+    <p>Completa tu perfil para unirte a la red</p>
   </div>
 </header>
 
@@ -383,7 +383,7 @@
       <div class="step-header">
         <div class="step-number">Paso 1 de 8</div>
         <h2 class="step-title">Información de contacto</h2>
-        <p class="step-desc">Ingresa tu nombre completo y correo electrónico para comenzar.</p>
+        <p class="step-desc">Ingresa tu información básica de contacto para comenzar.</p>
       </div>
       <div class="field">
         <label for="nombre">Nombre completo <span class="req">*</span></label>
@@ -394,6 +394,11 @@
         <label for="email">Correo electrónico <span class="req">*</span></label>
         <input type="email" id="email" placeholder="correo@empresa.com" autocomplete="email" />
         <div class="error-msg" id="err-email">Ingresa un correo electrónico válido.</div>
+      </div>
+      <div class="field">
+        <label for="linkedin">Perfil de LinkedIn <span class="req">*</span></label>
+        <input type="text" id="linkedin" placeholder="https://www.linkedin.com/in/tu-perfil" autocomplete="url" />
+        <div class="error-msg" id="err-linkedin">Ingresa un enlace válido de LinkedIn.</div>
       </div>
       <div class="nav-row">
         <span></span>
@@ -677,6 +682,7 @@ function validateStep(step) {
   if (step === 1) {
     fieldErr('nombre', 'err-nombre', v => v.length > 1);
     fieldErr('email', 'err-email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+    fieldErr('linkedin', 'err-linkedin', v => v.length > 5 && v.toLowerCase().includes('linkedin'));
   }
   if (step === 2) {
     fieldErr('perfil', 'err-perfil', v => v.length > 20);
@@ -754,6 +760,7 @@ function collectData() {
   return {
     nombre:    document.getElementById('nombre').value.trim(),
     email:     document.getElementById('email').value.trim(),
+    linkedin:  document.getElementById('linkedin').value.trim(),
     perfil:    document.getElementById('perfil').value.trim(),
     titulos:   [...document.querySelectorAll('#titulos-list .titulo-row')].map(row => {
       const ins = row.querySelectorAll('input');
@@ -860,7 +867,7 @@ async function generatePDF() {
 
   // NAME & EMAIL
   doc.setFillColor(...LIGHT);
-  doc.roundedRect(margin, y, contentW, 52, 6, 6, 'F');
+  doc.roundedRect(margin, y, contentW, 66, 6, 6, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.setTextColor(...DARK);
@@ -869,7 +876,8 @@ async function generatePDF() {
   doc.setFontSize(10);
   doc.setTextColor(...MID);
   doc.text(data.email, margin + 16, y + 38);
-  y += 70;
+  doc.text(data.linkedin || '', margin + 16, y + 52);
+  y += 84;
 
   // SECTIONS
   sectionTitle('Perfil Profesional');
